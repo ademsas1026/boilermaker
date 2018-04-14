@@ -2,6 +2,9 @@
 const express = require('express');
 const app = express();
 
+//for database syncing
+const db = require('./db/index.js')
+
 //2. set up logging middleware
 const morgan = require('morgan');
 app.use(morgan('dev'));
@@ -36,6 +39,9 @@ app.use((err, req, res, next) => {
 
 //10. start the server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`it's your server, listening in on port ${port}`);
-})
+db.sync()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`it's your server, listening in on port ${port}`);
+        })
+    })
